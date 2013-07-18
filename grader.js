@@ -45,6 +45,7 @@ var loadChecks = function(checksfile) {
     return JSON.parse(fs.readFileSync(checksfile));
 };
 
+
 var checkHtmlFile = function(htmlfile, checksfile) {
     $ = cheerioHtmlFile(htmlfile);
     var checks = loadChecks(checksfile).sort();
@@ -76,7 +77,17 @@ if(require.main == module) {
             body += chunk;
           });
           res.on('end', function() {
-            console.log(body);
+            fs.writeFile("url.txt", body, function(err) {
+              if(err) {
+                console.log(err);
+              } else {
+                var checkJson = checkHtmlFile("url.txt", program.checks);
+                var outJson = JSON.stringify(checkJson, null, 4);
+                console.log(outJson);  
+
+              }
+            }); 
+ 
           });
         });
     }
